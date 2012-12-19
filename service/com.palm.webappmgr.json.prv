@@ -1,7 +1,7 @@
 {
     "role": {
         "exeName":"/usr/bin/WebAppMgr",
-        "type": "regular",
+        "type": "privileged",
         "allowedNames": ["", "com.palm.lunastats", "com.palm.appDataBackup", "com.palm.eventreporter.WebAppMgr", "com.palm.luna-*"]
     },
     "permissions": [
