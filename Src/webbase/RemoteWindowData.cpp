@@ -29,6 +29,8 @@
 #include "RemoteWindowDataOpenGLTextureShared.h"
 #elif defined(OPENGLCOMPOSITED)
 #include "RemoteWindowDataSoftwareOpenGLComposited.h"
+#elif defined(HAVE_HYBRIS)
+#include "RemoteWindowDataOpenGLHybris.h"
 #endif
 #endif
 
@@ -48,6 +50,8 @@ RemoteWindowData* RemoteWindowDataFactory::generate(int width, int height, bool 
     // for now, we don't support remote OpenGL on Desktop
 #elif defined(HAVE_OPENGL) && defined(DIRECT_RENDERING)
     data = new RemoteWindowDataOpenGLQt(width, height, hasAlpha);
+#elif defined(HAVE_OPENGL) && defined(HAVE_HYBRIS)
+    data = new RemoteWindowDataOpenGLHybris(width, height, hasAlpha);
 #else
 	data = new RemoteWindowDataSoftwareQt(width, height, hasAlpha);
 #endif	

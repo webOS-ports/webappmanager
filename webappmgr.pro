@@ -190,12 +190,21 @@ contains(CONFIG_BUILD, opengl) {
             NAppWindow.h
                 #LIBS += -lnapp -lnrwindow
     } else {
+
         contains(CONFIG_BUILD, openglcomposited) {
             DEFINES += OPENGLCOMPOSITED
             SOURCES += RemoteWindowDataSoftwareOpenGLComposited.cpp
             HEADERS += RemoteWindowDataSoftwareOpenGLComposited.h \
                        NAppWindow.h
         }
+
+        contains(CONFIG_BUILD, hybris) {
+            DEFINES += HAVE_HYBRIS Q_WS_QPA
+            SOURCES += RemoteWindowDataOpenGLHybris.cpp
+            HEADERS += RemoteWindowDataOpenGLHybris.h \
+                       qweboswindow.h
+        }
+
         SOURCES += \
             # HostWindowDataOpenGL.cpp \
             RemoteWindowDataSoftwareQt.cpp \

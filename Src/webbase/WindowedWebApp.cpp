@@ -164,8 +164,10 @@ void WindowedWebApp::attach(SysMgrWebBridge* page)
 		// wait until progress = 100 before actually adding the window.
 		// We do the prepare add window here since we don't have the appid
 		// info from earlier.
-		m_channel->sendAsyncMessage(new ViewHost_PrepareAddWindowWithMetaData(routingId(), metadataId(),
-																			  m_winType, m_width, m_height));		
+		int winId = 0;
+		m_channel->sendSyncMessage(new ViewHost_PrepareAddWindowWithMetaData(metadataId(),
+																			  m_winType, m_width, m_height, &winId));
+		m_data->setKey(winId);
 		m_channel->sendAsyncMessage(new ViewHost_SetAppId(routingId(), this->page()->appId().toStdString()));
 		m_channel->sendAsyncMessage(new ViewHost_SetProcessId(routingId(), this->page()->processId().toStdString()));
 		m_channel->sendAsyncMessage(new ViewHost_SetLaunchingAppId(routingId(), this->page()->launchingAppId().toStdString()));
@@ -355,6 +357,8 @@ void WindowedWebApp::screenSize(int& width, int& height)
 
 void WindowedWebApp::paint()
 {
+	qDebug() << __PRETTY_FUNCTION__;
+
     stopPaintTimer();
 
     if (!appLoaded())
