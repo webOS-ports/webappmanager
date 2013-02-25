@@ -1855,8 +1855,11 @@ void CardWebApp::thawFromCache()
 			flipEvent(wam->currentUiWidth(), wam->currentUiHeight());
 	}
 	
-	m_channel->sendAsyncMessage(new ViewHost_PrepareAddWindowWithMetaData(routingId(), metadataId(),
-																		  m_winType, m_width, m_height));		
+	int winId = 0;
+	m_channel->sendSyncMessage(new ViewHost_PrepareAddWindowWithMetaData(metadataId(),
+																		 m_winType, m_width,
+																		 m_height, &winId));
+	m_data->setKey(winId);
 	m_channel->sendAsyncMessage(new ViewHost_SetAppId(routingId(), page()->appId().toStdString().c_str()));
 	m_channel->sendAsyncMessage(new ViewHost_SetProcessId(routingId(), page()->processId().toStdString().c_str()));
 	m_channel->sendAsyncMessage(new ViewHost_SetLaunchingAppId(routingId(), page()->launchingAppId().toStdString().c_str()));

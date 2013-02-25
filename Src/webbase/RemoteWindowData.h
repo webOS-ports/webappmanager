@@ -51,6 +51,7 @@ public:
 
 	virtual bool isValid() const { return true; }
 	virtual int key() const = 0;
+	virtual void setKey(int key) { }
 	virtual int width() const = 0;
 	virtual int height() const = 0;
 	virtual bool hasAlpha() const = 0;

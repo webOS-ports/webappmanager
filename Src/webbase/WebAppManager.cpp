@@ -217,6 +217,10 @@ WebAppManager::WebAppManager()
     setenv("QT_PLUGIN_PATH", "/usr/plugins", 1);
     setenv("QT_DEBUG_PLUGINS", "1", 1);
 
+#if defined(HAVE_HYBRIS)
+    setenv("QT_WEBOS_WEBAPPMGR", "1", 1);
+#endif
+
 #if defined(TARGET_DEVICE)
     static const char *argv[] = { "./WebAppManager", "-platform", "webos", NULL };
 #else
