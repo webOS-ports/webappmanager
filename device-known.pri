@@ -66,13 +66,13 @@ contains(MACHINE_NAME, "opal") {
 contains(MACHINE_NAME, "tuna") {
     DEFINES += MACHINE_TUNA HAS_DISPLAY_TIMEOUT HAS_PALM_QPA
     CONFIG_BUILD += webosdevice nyx
-    CONFIG_BUILD += opengl
+    CONFIG_BUILD += opengl hybris
     LIBS += -lqpalm
 }
 contains(MACHINE_NAME, "grouper") {
     DEFINES += MACHINE_GROUPER HAS_DISPLAY_TIMEOUT
     TARGET_TYPE = TARGET_DEVICE
     CONFIG_BUILD += webosdevice nyx
-    CONFIG_BUILD += opengl
+    CONFIG_BUILD += opengl hybris
     LIBS += -lqpalm
 }
