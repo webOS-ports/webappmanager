@@ -27,7 +27,8 @@
 #include <PIpcMessageMacros.h>
 
 #include "Logging.h"
-#include "qweboswindow.h"
+
+#include <qt-webos-plugin/qweboswindow.h>
 
 RemoteWindowDataOpenGLHybris::RemoteWindowDataOpenGLHybris(int width, int height, bool hasAlpha)
 	: m_width(width),
