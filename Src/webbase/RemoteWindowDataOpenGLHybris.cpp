@@ -28,8 +28,6 @@
 
 #include "Logging.h"
 
-#include <qt-webos-plugin/qweboswindow.h>
-
 RemoteWindowDataOpenGLHybris::RemoteWindowDataOpenGLHybris(int width, int height, bool hasAlpha)
 	: m_width(width),
 	  m_height(height),
@@ -53,8 +51,7 @@ void RemoteWindowDataOpenGLHybris::setKey(int key)
 	m_key = key;
 
 	QPlatformWindow *platformWindow = m_glWidget->platformWindow();
-	QWebOSWindow *window = reinterpret_cast<QWebOSWindow*>(platformWindow);
-	window->setWinId(m_key);
+	platformWindow->setWinId(m_key);
 }
 
 void RemoteWindowDataOpenGLHybris::flip()
