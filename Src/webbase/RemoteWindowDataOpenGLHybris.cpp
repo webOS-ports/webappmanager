@@ -34,8 +34,9 @@ RemoteWindowDataOpenGLHybris::RemoteWindowDataOpenGLHybris(int width, int height
 	  m_hasAlpha(hasAlpha)
 {
 	m_glWidget = new QGLWidget();
-	m_glWidget->setGeometry(QRect(0, 0, width, height));
-	m_glWidget->show();
+
+	QPlatformWindow *platformWindow = m_glWidget->platformWindow();
+	platformWindow->setGeometry(QRect(0, 0, width, height));
 
 	m_context = new QPainter();
 }
