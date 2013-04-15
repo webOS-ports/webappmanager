@@ -199,7 +199,6 @@ contains(CONFIG_BUILD, opengl) {
         }
 
         contains(CONFIG_BUILD, hybris) {
-            PKGCONFIG += WebosHybrisCompositor
             DEFINES += HAVE_HYBRIS Q_WS_QPA
             SOURCES += RemoteWindowDataOpenGLHybris.cpp
             HEADERS += RemoteWindowDataOpenGLHybris.h
