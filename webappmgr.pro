@@ -1,6 +1,6 @@
 # @@@LICENSE
 #
-#      Copyright (c) 2010-2012 Hewlett-Packard Development Company, L.P.
+#      Copyright (c) 2010-2013 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,9 +32,17 @@ ENV_BUILD_TYPE = $$(BUILD_TYPE)
 CONFIG += no_keywords
 
 CONFIG += link_pkgconfig
-PKGCONFIG = glib-2.0 gthread-2.0 sqlite3
+PKGCONFIG = glib-2.0 gthread-2.0 sqlite3 LunaSysMgrIpc
 
-QT = core gui quick webkit network widgets
+QT = core gui quick webkit network widgets webkitwidgets
+
+QT_VERSION=$$[QT_VERSION]
+contains(QT_VERSION, "^5.*") {
+    message("Building for Qt5, enabling webkitwidgets")
+} else {
+    message("Building for Qt4, disabling webkitwidgets")
+    QT -= webkitwidgets
+}
 
 VPATH += \
     ./Src \
@@ -62,11 +70,6 @@ DEFINES += QT_WEBOS
 
 # For shipping version of the code, as opposed to a development build. Set this to 1 late in the process...
 DEFINES += SHIPPING_VERSION=0
-
-# Uncomment to compile in trace statements in the code for debugging
-# DEFINES += ENABLE_TRACING
-
-# DEFINES += HAVE_CALLGRIND=1
 
 # This allows the use of the % for faster QString concatentation
 # See the QString documentation for more information
@@ -127,7 +130,6 @@ HEADERS += \
         ProcessManager.h \
         RemoteWindowData.h \
         SharedGlobalProperties.h \
-        SoundPlayerPool.h \
         SyncTask.h \
         SysMgrWebBridge.h \
         SystemUiController.h \
@@ -150,6 +152,7 @@ QMAKE_CXXFLAGS += -DFIX_FOR_QT
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter -Wno-unused-variable -Wno-reorder -Wno-missing-field-initializers -Wno-extra
 
 LIBS += -lcjson -lLunaSysMgrIpc -llunaservice -lpbnjson_cpp -lssl -lsqlite3 -lssl -lcrypto # -lgcov
+LIBS += -lLunaSysMgrCommon
 
 linux-g++ {
     include(desktop.pri)
@@ -222,47 +225,13 @@ else {
     HEADERS += RemoteWindowDataSoftwareQt.h
 }
 
-contains(CONFIG_BUILD, fb1poweroptimization) {
-    DEFINES += FB1_POWER_OPTIMIZATION=1
-}
-
 contains(CONFIG_BUILD, directrendering) {
     DEFINES += DIRECT_RENDERING=1
-}
-
-contains(CONFIG_BUILD, haptics) {
-    DEFINES += HAPTICS=1
-}
-
-contains(CONFIG_BUILD, mediaapi) {
-    SOURCES += SoundPlayer.cpp
-    HEADERS += SoundPlayer.h
-    LIBS += -lmedia-api
-    DEFINES += HAS_MEDIA_API
-} else {
-    SOURCES += SoundPlayerDummy.cpp
-    HEADERS += SoundPlayerDummy.h
 }
 
 contains(CONFIG_BUILD, memchute) {
     LIBS += -lmemchute
     DEFINES += HAS_MEMCHUTE
-}
-
-contains(CONFIG_BUILD, hidlib) {
-    INCLUDEPATH += $$(STAGING_INCDIR)/hid/IncsPublic
-    LIBS += -lhid
-    DEFINES += HAS_HIDLIB
-}
-
-contains(CONFIG_BUILD, affinity) {
-    LIBS += -laffinity
-    DEFINES += HAS_AFFINITY
-}
-
-contains(CONFIG_BUILD, napp) {
-    INCLUDEPATH += $$(STAGING_INCDIR)/napp
-    DEFINES += HAS_NAPP
 }
 
 DESTDIR = ./$${BUILD_TYPE}-$${MACHINE_NAME}
@@ -271,7 +240,6 @@ OBJECTS_DIR = $$DESTDIR/.obj
 MOC_DIR = $$DESTDIR/.moc
 
 TARGET = WebAppMgr
-LIBS += -lLunaSysMgrCommon
 
 # Comment these out to get verbose output
 #QMAKE_CXX = @echo Compiling $(@)...; $$QMAKE_CXX

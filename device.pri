@@ -1,6 +1,6 @@
 # @@@LICENSE
 #
-#      Copyright (c) 2010-2012 Hewlett-Packard Development Company, L.P.
+#      Copyright (c) 2010-2013 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,6 +45,10 @@ INCLUDEPATH += \
         $$(STAGING_INCDIR)/luna-sysmgr-common \
         $$(STAGING_INCDIR)/ime \
 
+contains(QT_VERSION, "^5.*") {
+    INCLUDEPATH += $$(STAGING_INCDIR)/QtWebKitWidgets
+}
+
 LIBS += -Wl,-rpath $$(STAGING_LIBDIR)
 
 DEFINES += $$TARGET_TYPE HAS_LUNA_PREF=1 QT_PLUGIN QT_STATICPLUGIN HAS_QPA
@@ -69,24 +73,14 @@ include(device-known.pri)
 
 contains(CONFIG_BUILD, webosdevice) {
     ## Known Device
-    LIBS += -lserviceinstaller
 } else {
     warning($$MACHINE_NAME not matched in device-known.pri)
 
     ##  Set this if you have nyx-modules for your build target (Highly recommended)
     CONFIG_BUILD += nyx
 
-    ##  Set this if you have media-api to handle sound
-    # CONFIG_BUILD += mediaapi
-
     ##  You must have a QPA or can use the standard QPA (change the LIBS value to your QPA library)
     LIBS += -lqpalm
-
-    ##  Activate ServiceInstaller, if available for your build target
-    # LIBS += -lserviceinstaller
-
-    ##  Set this if you have libnapp and nrwindow available for your build target
-    # CONFIG_BUILD += napp
 
 }
 

@@ -67,6 +67,8 @@ private:
 	bool timerTicked();
 	int getCurrentRssUsage() const;
 
+    void adjustOomScore();
+
 #if defined(HAS_MEMCHUTE)
     static void memchuteCallback(MemchuteThreshold threshold);
 #endif

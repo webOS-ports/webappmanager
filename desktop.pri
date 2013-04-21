@@ -1,6 +1,6 @@
 # @@@LICENSE
 #
-#      Copyright (c) 2010-2012 Hewlett-Packard Development Company, L.P.
+#      Copyright (c) 2010-2013 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ TOP_DIR_ABS = $$system(cd $$TOP_DIR_REL; pwd)
 
 WEBKIT_PATH = $$(WEBKIT_PATH)
 isEmpty (WEBKIT_PATH) {
-	WEBKIT_PATH = $$TOP_DIR_ABS/webkit4v8
+    WEBKIT_PATH = $$TOP_DIR_ABS/webkit4v8
 }
 
 DEFINES += TARGET_DESKTOP
@@ -66,12 +66,13 @@ INCLUDEPATH += \
 	$$(LUNA_STAGING)/include/QtOpenGL \
 	$$(LUNA_STAGING)/include/QtSql \
 	$$(LUNA_STAGING)/include/QtDeclarative \
-	$$(LUNA_STAGING)/include/sysmgr-ipc \
 	$$(LUNA_STAGING)/include/ime \
         $$(LUNA_STAGING)/include/luna-sysmgr-common \
 	$$(LUNA_STAGING)/usr/include
 
-
+contains(QT_VERSION, "^5.*") {
+    INCLUDEPATH += $$(LUNA_STAGING)/include/QtWebKitWidgets
+}
 
 #install
 target.path = $$(LUNA_STAGING)/bin

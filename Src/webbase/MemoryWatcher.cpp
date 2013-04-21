@@ -22,6 +22,7 @@
 #include "Common.h"
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
 #include <strings.h>
@@ -32,6 +33,12 @@
 #include "Settings.h"
 #include "Time.h"
 #include "WebAppManager.h"
+
+#define OOM_ADJ_PATH "/proc/self/oom_adj"
+#define OOM_SCORE_ADJ_PATH "/proc/self/oom_score_adj"
+
+#define OOM_ADJ_VALUE -17
+#define OOM_SCORE_ADJ_VALUE -1000
 
 static const int kTimerMs = 5000;
 static const int kLowMemExpensiveTimeoutMultiplier = 2;
@@ -57,15 +64,6 @@ MemoryWatcher::MemoryWatcher()
 	m_fileName[kFileNameLen - 1] = 0;
 	snprintf(m_fileName, kFileNameLen - 1, "/proc/%d/statm", getpid());
 
-	char oom_adj[kFileNameLen];
-	snprintf(oom_adj, kFileNameLen - 1, "/proc/%d/oom_adj", getpid());
-	FILE* f = fopen(oom_adj, "wb");
-	if (f) {
-		size_t result = fwrite("-17\n", 4, 1, f);
-		Q_UNUSED(result);
-		fclose(f);	
-	}
-
 	m_timeAtLastLowMemAction = 0;
 	m_timeAtLastExpensiveLowMemAction = 0;
 }
@@ -90,6 +88,7 @@ void MemoryWatcher::start()
 		g_warning("Failed to create MemchuteWatcher");
 	}
 #endif	    
+    adjustOomScore();
 }
 
 static const char* nameForState(MemoryWatcher::MemState state)
@@ -193,6 +192,37 @@ void MemoryWatcher::doLowMemActions(bool allowExpensive)
 
 	m_currRssUsage = getCurrentRssUsage();			
     g_warning("MemoryWatcher: RSS usage after low memory actions: %dMB\n", m_currRssUsage);
+}
+
+void MemoryWatcher::adjustOomScore() 
+{
+    struct stat st;
+    int score_value = 0;
+
+    /* Adjust OOM killer so we're considered the least likely candidate 
+     * for killing in OOM conditions
+     */
+    char oom_adj_path[kFileNameLen];
+    snprintf(oom_adj_path, kFileNameLen - 1, OOM_SCORE_ADJ_PATH);
+    if (stat(oom_adj_path, &st) == -1) {
+        snprintf(oom_adj_path, kFileNameLen - 1, OOM_ADJ_PATH);
+        if (stat(oom_adj_path, &st) == -1) {
+            g_warning("MemoryWatcher: Failed to adjust OOM value");
+            return;
+        } else {
+            score_value = OOM_ADJ_VALUE;
+        }
+    } else {
+        score_value = OOM_SCORE_ADJ_VALUE;
+    }
+
+    FILE* f = fopen(oom_adj_path, "w");
+    if(f) {
+        fprintf(f, "%i", score_value);
+        fclose(f);
+    } else {
+        g_warning("MemoryWatcher: Failed to adjust OOM value, could not open file %s", oom_adj_path);
+    }
 }
 
 #if defined(HAS_MEMCHUTE)

@@ -1,6 +1,6 @@
 # @@@LICENSE
 #
-#      Copyright (c) 2010-2012 Hewlett-Packard Development Company, L.P.
+#      Copyright (c) 2010-2013 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,6 +65,10 @@ contains (CONFIG_BUILD, webosemulator) {
             $$(STAGING_INCDIR)/PmLogLib/IncsPublic \
             $$(STAGING_INCDIR)/ime \
             $$(STAGING_INCDIR)/luna-sysmgr-common \
+
+    contains(QT_VERSION, "^5.*") {
+        INCLUDEPATH += $$(STAGING_INCDIR)/QtWebKitWidgets
+    }
 
 } else {
     warning($$MACHINE_NAME not matched in emulator.pri)
