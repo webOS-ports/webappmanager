@@ -157,7 +157,13 @@ void WindowedWebApp::attach(SysMgrWebBridge* page)
     connect(page->page(), SIGNAL(windowCloseRequested()), this, SLOT(closeWindowRequest()));
 
     page->page()->setViewportSize(QSize(m_windowWidth, m_windowHeight));
-    page->page()->mainFrame()->setZoomFactor(Settings::LunaSettings()->layoutScale);
+
+    std::set<std::string>::iterator it;
+    it = Settings::LunaSettings()->compatApps.find(this->page()->appId().toStdString());
+    if (it == Settings::LunaSettings()->compatApps.end())
+        page->page()->mainFrame()->setZoomFactor(Settings::LunaSettings()->layoutScale);
+    else
+        page->page()->mainFrame()->setZoomFactor(Settings::LunaSettings()->layoutScaleCompat);
 
     if (m_winType != WindowType::Type_ChildCard) {
 
