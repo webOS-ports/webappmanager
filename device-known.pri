@@ -75,3 +75,10 @@ contains(MACHINE_NAME, "grouper") | contains(MACHINE_NAME, "tilapia") {
     CONFIG_BUILD += opengl hybris
     LIBS += -lqpalm
 }
+contains(MACHINE_NAME, "a500") {
+    DEFINES += MACHINE_A500 HAS_DISPLAY_TIMEOUT HAS_PALM_QPA
+    CONFIG_BUILD += webosdevice nyx
+    CONFIG_BUILD += opengl hybris
+    LIBS += -lqpalm
+}
+
