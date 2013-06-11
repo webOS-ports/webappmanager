@@ -1294,7 +1294,7 @@ void CardWebApp::attach(SysMgrWebBridge* page)
 		setVisibleDimensions(m_width, m_height);
 
     m_webview->setPage(page->page());
-    page->page()->settings()->setAttribute(QWebSettings::AcceleratedCompositingEnabled, false);
+    page->page()->settings()->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
 }
 
 SysMgrWebBridge* CardWebApp::detach()
