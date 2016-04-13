@@ -50,7 +50,7 @@
 
 #include <QApplication>
 #include <QtGui>
-#include <QtGlobal> 
+#include <QtGlobal>
 
 /* Convenience macro for simulating crashes for debugging purposes only:
 #define crash() {                               \
@@ -256,8 +256,8 @@ static gboolean mallocStatsCb(gpointer data)
 	fsync(STDERR_FILENO);
 
     flock(STDERR_FILENO, LOCK_UN);
-	
-	
+
+
 	return TRUE;
 }
 
@@ -331,7 +331,7 @@ static void outerCrashHandler(int sig, siginfo_t *info, void *data)
                  "/media/internal/lunasysmgr.%d.verbose.log", sysmgrPid);
         logFileName = logFileNameBuffer;
     }
-    
+
     crashLogFD = open(logFileName, O_WRONLY | O_CREAT | O_TRUNC);
 
 #if 0 // Disable until we can do this without calling malloc and free:
@@ -500,7 +500,7 @@ int main( int argc, char** argv)
 	::setenv("QT_PLUGIN_PATH", "/usr/plugins", 1);
 	renderMode = "HW egl";
 #elif defined(TARGET_DEVICE) || defined(TARGET_EMULATOR)
-	::setenv("QT_PLUGIN_PATH", "/usr/plugins", 1);	
+	::setenv("QT_PLUGIN_PATH", "/usr/plugins", 1);
 	renderMode = "Software";
 #elif defined(HAVE_OPENGL)
 	renderMode = "HW OpenGL";
@@ -553,11 +553,15 @@ int main( int argc, char** argv)
     // Do not override the value if the variable exists
     ::setenv("QT_QPA_PLATFORM", "palm", 0);
 #endif
-	
-	
+
+
 #if defined(TARGET_DEVICE) && defined(HAVE_OPENGL)
 	if (!settings->forceSoftwareRendering)
 		::setenv("QWS_DISPLAY", "egl", 1);
+#endif
+
+#if defined(HAVE_HYBRIS)
+	::setenv("EGL_PLATFORM", "offscreen", 0);
 #endif
 
     // Install the handler for signals that we want to trap:
